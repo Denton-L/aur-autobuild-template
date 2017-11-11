@@ -123,3 +123,7 @@ upgrades). Finally, you can install all of your AUR packaages using a simple
 
 Pull-requests and suggestions are welcome! Please let me know if you have any suggestions or
 improvements!
+
+## Acknowledgements
+
+Credit to [/u/_ahrs](https://www.reddit.com/r/linuxmasterrace/comments/7aai76/i_am_using_archlinux/dp94r3s/) for the inspiration!
