@@ -47,4 +47,7 @@ do
 	popd
 done
 
+# fix bug where GitHub changes : to . automatically for releases
+rename -v : . "$REPO_DIR"/*
+
 repo-add -s "$REPO_DIR"/"$REPO_NAME".db.tar.xz "$REPO_DIR"/*.pkg.tar.xz
