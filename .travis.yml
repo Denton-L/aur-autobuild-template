@@ -1,0 +1,39 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  # - openssl aes-256-cbc -K <key> -iv <IV> -in package-key.pgp.enc -out package-key.pgp -d
+  - docker build --build-arg USER_ID="$(id -u)" -t "$DOCKER_TAG" docker/
+
+script:
+  - docker run -e REPO_NAME="$REPO_NAME" -v "$PWD":/home/builder/aur-build "$DOCKER_TAG"
+
+before_deploy:
+  - git remote add secure "https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
+  - git tag -f "$REPO_NAME"
+  - git push -f secure "$REPO_NAME":"$REPO_NAME"
+
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file: repo/*
+  overwrite: true
+  skip_cleanup: true
+  tag_name: $REPO_NAME
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+
+branches:
+  only: master
+
+env:
+  global:
+    - DOCKER_TAG=aur-build
+    - REPO_NAME=personal
+    # - secure: <encrypted GITHUB_TOKEN>
