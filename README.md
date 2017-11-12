@@ -12,6 +12,31 @@ Feel free to fork this template and use it for your own builds. Contributions ar
 
 ## Setup
 
+### Signing your Packages (Optional but Highly Recommended!)
+
+Create a new PGP key using `gpg --gen-key`; follow the instructions given to create your key. Even
+though it is against normal best practices, you should use *no password* for your key because there
+is no security gained if you have to tell Travis CI your password anyway. Make sure to keep a copy
+of the revocation certificate in case your key becomes compromised. Also, make note of your key's
+fingerprint for the following steps.
+
+In `settings.conf`, add your key's fingerprint to `sign_key`.
+
+You'll also have to export your key for `pacman-key` so that it can sign it. This tells pacman to
+trust the key you've just created. Run the following to do that:
+
+```bash
+gpg --export --output public-package-key.pgp <fingerprint>
+sudo pacman-key -a public-package-key.pgp
+sudo pacman-key --lsign-key <fingerprint>
+```
+
+Finally, you'll have to send the encrypted private key to Travis CI. Export your private key by
+running `gpg --export-secret-keys --output package-key.pgp <fingerprint>`.
+
+**Warning!** Make sure that you do not accidentally commit your private key. That would be very,
+very bad.
+
 ### Local Repository
 
 First, you will need to get a list of all foreign packages. This list should be ordered with any
@@ -55,20 +80,27 @@ fi' | sort -u
 
 ### Travis CI
 
-First, push your repository to GitHub. Next, navigate to https://travis-ci.org/profile and turn on
-the switch corresponding to the repository you just pushed.
+In order to push releases, you'll have to generate a SSH keypair. To do this, run
+`ssh-keygen -f deploy_key`. Next, copy the contents of your public key, `deploy_key.pub`, over to
+`https://github.com/<user>/<repository>/settings/keys`.
 
-Next, you'll need to generate a GitHub access token in order to release packages. Go to
-https://github.com/settings/tokens and `Generate new token`. Check the `repo.public_repo` scope.
-Encrypt this token by running `travis encrypt GITHUB_TOKEN=<token>`, then add the line printed into
-`env.global` of `.travis.yml`.
+Next, push your repository to GitHub. Then to enable the repository, you'll have to navigate to
+https://travis-ci.org/profile and turn on the switch corresponding to the repository you just
+pushed.
 
-Finally, if you would like, you may configure any of the other variables in the `env` section.
+At this point, it's time to encrypt your secret files. To do this, first create a tarball with all
+of the files you wish to encrypt using `tar cvfz secrets.tar.gz deploy_key package-key.pgp`. Omit
+the last parameter of that command if you chose not to sign your packages. Then, you'll have to push
+this package up to Travis CI. You can do this by running `travis encrypt-file secrets.tar.gz`. Make
+sure you put the line that was output under `before_install` in your `.travis.yml` file.
+
+Finally, if you would like, you may configure any of the other variables in the `env.global` section
+of your `.travis.yml` file.
 
 You may now push your changes to GitHub. This should automatically trigger a Travis CI build which,
 when complete, will push a release to
-`https://github.com/<user>/<repository>/releases/tag/$REPO_NAME`, where `$REPO_NAME` is the value of
-`env.global.REPO_NAME` in `.travis.yml`.
+`https://github.com/<user>/<repository>/blob/$PUSH_BRANCH/repo`, where `$PUSH_BRANCH` is the value
+specified in `env.global.PUSH_BRANCH` in `.travis.yml`.
 
 ### Pacman
 
@@ -84,34 +116,6 @@ Where `$REPO_NAME` should be replaced the value of `env.global.REPO_NAME` in `.t
 
 If you do not plan on signing your packages, add `SigLevel = PackageOptional` as well.
 
-### Signing your Packages (Optional but Highly Recommended!)
-
-Create a new PGP key using `gpg --gen-key`; follow the instructions given to create your key. Even
-though it is against normal best practices, you should use *no password* for your key because there
-is no security gained if you have to tell Travis CI your password anyway. Make sure to keep a copy
-of the revocation certificate in case your key becomes compromised. Also, make note of your key's
-fingerprint for the following steps.
-
-In `settings.conf`, add your key's fingerprint to `sign_key`.
-
-You'll also have to export your key for `pacman-key` so that it can sign it. This tells pacman to
-trust the key you've just created. Run the following to do that:
-
-```bash
-gpg --export --output public-package-key.pgp <fingerprint>
-sudo pacman-key -a public-package-key.pgp
-sudo pacman-key --lsign-key <fingerprint>
-```
-
-Finally, you'll have to send the encrypted private key to Travis CI. Export your private key by
-running `gpg --export-secret-keys --output package-key.pgp <fingerprint>`.
-Next, encrypt your private key for Travis by running
-`travis encrypt-file package-key.pgp` and adding the output line to your
-`.travis.yml` as the first line under `before_install`.
-
-**Warning!** Make sure that you do not accidentally commit your private key. That would be very,
-very bad.
-
 ### Finishing
 
 That's it, you're done! In order to use the newly created packages, simply run `sudo pacman -Syyu`
@@ -126,4 +130,6 @@ improvements!
 
 ## Acknowledgements
 
-Credit to [/u/_ahrs](https://www.reddit.com/r/linuxmasterrace/comments/7aai76/i_am_using_archlinux/dp94r3s/) for the inspiration!
+Credit to
+[/u/_ahrs](https://www.reddit.com/r/linuxmasterrace/comments/7aai76/i_am_using_archlinux/dp94r3s/)
+for the inspiration!

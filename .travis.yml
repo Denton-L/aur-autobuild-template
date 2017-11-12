@@ -4,25 +4,20 @@ services:
   - docker
 
 before_install:
-  # - openssl aes-256-cbc -K <key> -iv <IV> -in package-key.pgp.enc -out package-key.pgp -d
+  # - openssl aes-256-cbc -K <key> -iv <IV> -in secrets.tar.gz.enc -out secrets.tar.gz -d
+  - tar xvfz secrets.tar.gz
+  - chmod 600 deploy_key
   - docker build --build-arg USER_ID="$(id -u)" -t "$DOCKER_TAG" docker/
 
 script:
   - docker run -e REPO_NAME="$REPO_NAME" -v "$PWD":/home/builder/aur-build "$DOCKER_TAG"
 
-before_deploy:
-  - git remote add secure "https://$GITHUB_TOKEN@github.com/$TRAVIS_REPO_SLUG.git"
-  - git tag -f "$REPO_NAME"
-  - git push -f secure "$REPO_NAME":"$REPO_NAME"
-
 deploy:
-  provider: releases
-  api_key: $GITHUB_TOKEN
-  file_glob: true
-  file: repo/*
-  overwrite: true
+  provider: script
+  script: ./deploy.sh
   skip_cleanup: true
-  tag_name: $REPO_NAME
+  on:
+    branch: master
 
 notifications:
   email:
@@ -34,6 +29,6 @@ branches:
 
 env:
   global:
+    - PUSH_BRANCH=deploy
     - DOCKER_TAG=aur-build
     - REPO_NAME=personal
-    # - secure: <encrypted GITHUB_TOKEN>

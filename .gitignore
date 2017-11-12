@@ -1,2 +1,4 @@
 repo/
-*.pgp
+deploy_key*
+package-key*
+secrets.tar.gz
