@@ -29,6 +29,6 @@ branches:
 
 env:
   global:
-    - PUSH_BRANCH=deploy
+    - PUSH_BRANCH=gh-pages
     - DOCKER_TAG=aur-build
     - REPO_NAME=personal

@@ -94,13 +94,13 @@ the last parameter of that command if you chose not to sign your packages. Then,
 this package up to Travis CI. You can do this by running `travis encrypt-file secrets.tar.gz`. Make
 sure you put the line that was output under `before_install` in your `.travis.yml` file.
 
-Finally, if you would like, you may configure any of the other variables in the `env.global` section
-of your `.travis.yml` file.
+Finally, if you would like, you may configure the repository name by changing
+the `env.global.REPO_NAME` section of your `.travis.yml` file.
 
 You may now push your changes to GitHub. This should automatically trigger a Travis CI build which,
-when complete, will push a release to
-`https://github.com/<user>/<repository>/blob/$PUSH_BRANCH/repo`, where `$PUSH_BRANCH` is the value
-specified in `env.global.PUSH_BRANCH` in `.travis.yml`.
+when complete, will push a release to `http(s)://<user>.github.io/<repository>/repo`. In order to
+maximise security, ensure you have "Enforce HTTPS" checked under
+`https://github.com/<user>/<repository>/settings`, if possible.
 
 ### Pacman
 
