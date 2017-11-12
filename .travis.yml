@@ -3,6 +3,10 @@ sudo: required
 services:
   - docker
 
+cache:
+  directories:
+    - repo/
+
 before_install:
   # - openssl aes-256-cbc -K <key> -iv <IV> -in secrets.tar.gz.enc -out secrets.tar.gz -d
   - tar xvfz secrets.tar.gz

@@ -18,9 +18,6 @@ export PACKAGER="$(git show -s --format='%an <%ae>')"
 
 sudo pacman -Syu --noconfirm
 
-rm -rf "$REPO_DIR"
-git submodule foreach bash -c 'git reset --hard && git clean -xdff'
-
 if [ ! -z "$GPGKEY" ]
 then
 	$AUTO_GPG --import package-key.pgp
@@ -43,7 +40,7 @@ mkdir -p "$REPO_DIR"
 for p in "${packages[@]}"
 do
 	pushd "$p"
-	makepkg -si $SIGNING_ARGS --noconfirm
+	makepkg -si $SIGNING_ARGS --noconfirm &> "$REPO_DIR/$p-$(date -u +'%Y-%m-%dT%H:%M:%SZ').log" || :
 	popd
 done
 
