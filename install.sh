@@ -27,7 +27,7 @@ then
 	sudo pacman-key -a public-package-key.pgp
 	sudo pacman-key --lsign-key "$GPGKEY"
 
-	SIGNING_ARGS="--sign --key $GPGKEY"
+	SIGNING_ARGS="--sign"
 fi
 
 $AUTO_GPG --recv-keys "${trustedpgpkeys[@]}"
