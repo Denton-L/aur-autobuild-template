@@ -130,6 +130,7 @@ improvements!
 
 ## Acknowledgements
 
-Credit to
-[/u/_ahrs](https://www.reddit.com/r/linuxmasterrace/comments/7aai76/i_am_using_archlinux/dp94r3s/)
-for the inspiration!
+* [/u/_ahrs](https://www.reddit.com/r/linuxmasterrace/comments/7aai76/i_am_using_archlinux/dp94r3s/)
+  for the inspiration!
+
+* [Xin-Xin Wang](https://github.com/xinxinw1) for helping me review the project.
