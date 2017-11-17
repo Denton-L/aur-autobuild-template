@@ -123,6 +123,13 @@ to update the package databases (and also, your packages because Arch doesn't su
 upgrades). Finally, you can install all of your AUR packaages using a simple
 `sudo pacman -S <packages>`.
 
+## Security Warning
+
+If you are signing your packages, please note that you are placing absolute trust in GitHub to not
+tamper with the source and Travis CI to not tamper with your packages. In addition to that, you are
+trusting Travis CI with PGP private key, so make sure that you save and protect your revocation
+certificate, just in case.
+
 ## Contributing
 
 Pull-requests and suggestions are welcome! Please let me know if you have any suggestions or
