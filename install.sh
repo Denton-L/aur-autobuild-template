@@ -40,7 +40,7 @@ mkdir -p "$REPO_DIR"
 for p in "${packages[@]}"
 do
 	pushd "$p"
-	makepkg -si $SIGNING_ARGS --noconfirm &> "$REPO_DIR/$p-$(date -u +'%Y-%m-%dT%H:%M:%SZ').log" || :
+	makepkg -si $SIGNING_ARGS --noconfirm || :
 	popd
 done
 
