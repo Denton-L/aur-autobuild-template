@@ -130,6 +130,20 @@ tamper with the source and Travis CI to not tamper with your packages. In additi
 trusting Travis CI with PGP private key, so make sure that you save and protect your revocation
 certificate, just in case.
 
+## Limitations
+
+* The `gh-pages` branch has a limit of 50 MB so, if you would like to host a repository larger than
+  this, consider other hosting options. This can be configured in the `deploy` section of your
+  `.travis.yml`.
+
+* Travis CI automatically kills builds which produce more than 4 MB of output so if your log output
+  is very verbose, consider filtering out unnecessary lines using `grep -v` or logging into a file
+  in your `repo/` directory.
+
+* Travis CI automatically kills builds which do not produce any output after ten minutes so ensure
+  that your build produces some output within that timeframe. Alternatively, consider using
+  [`travis_wait`](https://docs.travis-ci.com/user/common-build-problems/#Build-times-out-because-no-output-was-received).
+
 ## Contributing
 
 Pull-requests and suggestions are welcome! Please let me know if you have any suggestions or
